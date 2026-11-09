@@ -3,6 +3,13 @@
  * Estado: VULNERABLE (Para refactorizar por los aprendices)
  */
 import express from 'express';
+import bcrypt from 'bcrypt';
+
+function hashearPassword(password) {
+    const saltRounds = 10;
+    return bcrypt.hashSync(password, saltRounds);
+}
+
 
 const app = express();
 
@@ -114,10 +121,13 @@ app.post('/api/register', (req, res, next) => {
             });
         }
 
+        const hashedPassword = hashearPassword(req.body.password);
+
         const newUser = {
             id: db.users.length + 1,
             username,
-            role
+            role,
+            passwordHash: hashedPassword
         };
 
         db.users.push(newUser);
